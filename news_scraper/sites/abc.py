@@ -41,6 +41,7 @@ def insert_article(db, article):
     article)
     print(f"[+] [{article['date_last_published']}] {article['headline']}")
     print(article['url'])
+    print()
 
 
 def update_article(db, article_id, article):
@@ -61,6 +62,7 @@ def update_article(db, article_id, article):
     })
     print(f"[^] [{article['date_last_published']}] {article['headline']}")
     print(article['url'])
+    print()
 
 
 def update_article_scrape_date(db, article_id, date_scraped):
