@@ -10,7 +10,7 @@ db = Database(
     host=os.environ['POSTGRES_HOST'],
 )
 
-db.create_table("""
+db.execute("""
     CREATE TABLE IF NOT EXISTS news_site (
         url VARCHAR(200) PRIMARY KEY,
         name VARCHAR(200),
