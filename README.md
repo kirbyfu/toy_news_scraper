@@ -42,8 +42,12 @@ Once running, the output will indicate `[+]` when an article was added and `[^]`
 
 The format is:
 ```
-[+/^] [Date last updated] Headline
+[+] [Date last updated] Headline
 URL to article
+
+[^] [Date last updated] Headline
+URL to article
+Diff of what changed in the article since the last scrape
 ```
 
 Example:
@@ -51,41 +55,12 @@ Example:
 [+] [2020-06-14T05:19+1000] This is what it's like inside Seattle's 'autonomous zone'
 https://www.abc.net.au/news/2020-06-14/this-is-what-its-like-inside-seattles-autonomous-zone/12350342
 
-[+] [2020-06-14T10:19+1000] How portmanteaus are helping us through the coronavirus pandemic
-https://www.abc.net.au/news/2020-06-14/miley-cyrus-coronavirus-covid19-cockney-rhyming-slang/12324930
-
-[+] [2020-06-12T18:09+1000] So, a test has shown you're unconsciously biased. Does that mean you're racist?
-https://www.abc.net.au/news/2020-06-14/implicit-association-test-indigenous-australia-negative-bias/12344930
-
-[+] [2020-06-14T15:28+1000] Qld's Chief Health officer stands firm despite two coronavirus cases arising after isolation
-https://www.abc.net.au/news/2020-06-14/coronavirus-queensland-chief-health-officer-defends-quarantine/12350746
-
-[^] [2020-06-14T15:40+1000] Atlanta police officer sacked as protesters set fire to restaurant where black man was killed
-https://www.abc.net.au/news/2020-06-14/police-officer-fired-after-shooting-dead-man-in-atlanta/12353338
-
-[+] [2020-06-14T16:01+1000] Big crowds relish return of Super Rugby in New Zealand without restrictions
-https://www.abc.net.au/news/2020-06-14/new-zealand-hosts-big-crowds-as-super-rugby-aotearoa-returns/12353918
-
-[^] [2020-06-14T16:09+1000] Qld's Chief Health officer stands firm despite two coronavirus cases arising after isolation
-https://www.abc.net.au/news/2020-06-14/coronavirus-queensland-chief-health-officer-defends-quarantine/12350746
-
-[+] [2020-06-14T16:16+1000] Australian sentenced to death in China for drug trafficking honest to a fault, friends say
-https://www.abc.net.au/news/2020-06-14/australian-sentenced-to-death-china-karm-gilespie-trafficking/12354002
-
-[^] [2020-06-14T16:24+1000] Atlanta police officer sacked as protesters set fire to restaurant where black man was killed
-https://www.abc.net.au/news/2020-06-14/police-officer-fired-after-shooting-dead-man-in-atlanta/12353338
-
-[^] [2020-06-14T16:33+1000] Atlanta police officer sacked as protesters set fire to restaurant where black man was killed
-https://www.abc.net.au/news/2020-06-14/police-officer-fired-after-shooting-dead-man-in-atlanta/12353338
-
-[+] [2020-06-14T17:19+1000] Fuel tanker explodes and launches into air, killing 18
-https://www.abc.net.au/news/2020-06-14/fuel-truck-flies-into-air-after-exploding-in-china/12354048
-
-[^] [2020-06-14T17:43+1000] Australian sentenced to death in China for drug trafficking honest to a fault, friends say
-https://www.abc.net.au/news/2020-06-14/australian-sentenced-to-death-china-karm-gilespie-trafficking/12354002
-
-[^] [2020-06-14T17:58+1000] Atlanta police officer sacked as protesters set fire to restaurant where black man was killed
-https://www.abc.net.au/news/2020-06-14/police-officer-fired-after-shooting-dead-man-in-atlanta/12353338
+[^] [2020-06-14T21:54+1000] Coronavirus updates: China reports highest daily total of new COVID-19 cases in two months
+https://www.abc.net.au/news/2020-06-14/coronavirus-update-covid19/12353050
+- This story was last updated at 8:30 pm AEST on Sunday
+- .
++ This story is no longer being updated. For the latest coronavirus news and updates,
++ follow this story.
 ```
 
 # To improve on
