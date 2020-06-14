@@ -138,14 +138,13 @@ def start_scrape(db):
     # If there was no previous scrape, insert every article
     if last_date_scraped is None:
         for article in articles:
-            content = get_article_content(article['url'])
+            insert_article(db, article)
         return
 
     for article in articles:
         prev_article = find_prev_article(db, article, last_date_scraped)
         if prev_article is None:
-            content = get_article_content(article['url'])
-            insert_article(db, article, content)
+            insert_article(db, article)
         elif (datetime.strptime(article['date_last_published'], '%Y-%m-%dT%H:%M%z') - prev_article['date_last_published']).seconds:
             new_content = get_article_content(article['url'])
             print(f"[^] [{article['date_last_published']}] {article['headline']}")
