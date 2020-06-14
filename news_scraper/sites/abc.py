@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from difflib import Differ
 import os
 
 from bs4 import BeautifulSoup
@@ -27,6 +28,16 @@ def get_articles(date_scraped):
     ]
 
 
+def get_article_content(article_url):
+    """Fetches the main body of an article and returns it as an html string"""
+    res = requests.get(article_url)
+    if res.status_code != 200:
+        raise Exception(f'Invalid status code: {res.status_code}')
+    soup = BeautifulSoup(res.text, 'html.parser')
+    body = soup.find(id='body')
+    return str(body)
+
+
 def get_last_date_scraped(db):
     """Returns the last datetime string a scrape was performed"""
     result = db.query('SELECT date_scraped FROM abc_article ORDER BY date_scraped DESC LIMIT 1')
@@ -35,10 +46,14 @@ def get_last_date_scraped(db):
 
 def insert_article(db, article):
     """Inserts a new article into the database"""
+    content = get_article_content(article['url'])
     db.execute("""
-        INSERT INTO abc_article (headline, summary, date_first_published, date_last_published, url, type, date_scraped)
-        VALUES (%(headline)s, %(summary)s, %(date_first_published)s, %(date_last_published)s, %(url)s, %(type)s, %(date_scraped)s)""",
-    article)
+        INSERT INTO abc_article (headline, summary, date_first_published, date_last_published, url, type, content, date_scraped)
+        VALUES (%(headline)s, %(summary)s, %(date_first_published)s, %(date_last_published)s, %(url)s, %(type)s, %(content)s, %(date_scraped)s)""",
+    {
+        'content': content,
+        **article,
+    })
     print(f"[+] [{article['date_last_published']}] {article['headline']}")
     print(article['url'])
     print()
@@ -51,6 +66,7 @@ def update_article(db, article_id, article):
             abc_article
         SET
             summary = %(summary)s,
+            content = %(content)s,
             date_last_published =%(date_last_published)s,
             url = %(url)s,
             date_scraped = %(date_scraped)s
@@ -60,9 +76,6 @@ def update_article(db, article_id, article):
         'article_id': article_id,
         **article,
     })
-    print(f"[^] [{article['date_last_published']}] {article['headline']}")
-    print(article['url'])
-    print()
 
 
 def update_article_scrape_date(db, article_id, date_scraped):
@@ -85,7 +98,8 @@ def find_prev_article(db, article, date_scraped):
     result = db.query("""
         SELECT
             id,
-            date_last_published
+            date_last_published,
+            content
         FROM
             abc_article
         WHERE
@@ -98,7 +112,21 @@ def find_prev_article(db, article, date_scraped):
         'date_first_published': article['date_first_published'],
         'date_scraped': date_scraped,
     })
-    return {'id': result[0][0], 'date_last_published': result[0][1]} if len(result) else None
+    return {
+        'id': result[0][0],
+        'date_last_published': result[0][1],
+        'content': result[0][2],
+    } if len(result) else None
+
+
+def print_difference(prev_content, new_content):
+    """Prints the difference between two html snippets"""
+    d = Differ()
+    prev_soup = BeautifulSoup(prev_content, 'html.parser')
+    new_soup = BeautifulSoup(new_content, 'html.parser')
+    diff = d.compare(list(prev_soup.stripped_strings), list(new_soup.stripped_strings))
+    # filter out text that didn't change
+    print('\n'.join(line for line in diff if not line.startswith(' ')))
 
 
 def start_scrape(db):
@@ -110,14 +138,20 @@ def start_scrape(db):
     # If there was no previous scrape, insert every article
     if last_date_scraped is None:
         for article in articles:
-            insert_article(db, article)
+            content = get_article_content(article['url'])
         return
 
     for article in articles:
         prev_article = find_prev_article(db, article, last_date_scraped)
         if prev_article is None:
-            insert_article(db, article)
+            content = get_article_content(article['url'])
+            insert_article(db, article, content)
         elif (datetime.strptime(article['date_last_published'], '%Y-%m-%dT%H:%M%z') - prev_article['date_last_published']).seconds:
+            new_content = get_article_content(article['url'])
+            print(f"[^] [{article['date_last_published']}] {article['headline']}")
+            print(article['url'])
+            print_difference(prev_article['content'], new_content)
+            article['content'] = new_content
             update_article(db, prev_article['id'], article)
         else:
             update_article_scrape_date(db, prev_article['id'], article['date_scraped'])

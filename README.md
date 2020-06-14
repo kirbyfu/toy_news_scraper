@@ -89,8 +89,6 @@ https://www.abc.net.au/news/2020-06-14/police-officer-fired-after-shooting-dead-
 ```
 
 # To improve on
-- Could also scrape each article's url for the main body and store it in the db column: article.content
-- Utilize a library like `difflib` to find the difference in the article content when it's updated
 - DB currently stores ABC's articles in its own table. The `abc_article` table can be a generic table for all articles but then that means each site's article would need to match the schema
 - A more flexible approach may be to simply store a json array of articles in Postgres (using JSONB) or a key value store like Redis. The schema of the JSON can vary depending on each site.
 - Monitoring website changes really only requires the last snapshot to compare to so we could just store the last snapshot as a single row containing an array of articles
