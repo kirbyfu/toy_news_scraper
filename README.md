@@ -32,6 +32,11 @@ Start monitoring
 python app.py
 ```
 
+## Run tests
+```
+pytest -vv
+```
+
 ## Output
 Once running, the output will indicate `[+]` when an article was added and `[^]` when an article was updated.
 
