@@ -23,6 +23,8 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+.pytest_cache
+
 # Environments
 .env
 .envrc
