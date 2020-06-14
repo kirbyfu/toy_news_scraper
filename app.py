@@ -1,4 +1,5 @@
 import os
+import time
 
 from news_scraper.db import Database
 from news_scraper.sites import abc
@@ -11,4 +12,6 @@ db = Database(
     host=os.environ['POSTGRES_HOST'],
 )
 
-abc.start_scrape(db)
+while True:
+    abc.start_scrape(db)
+    time.sleep(1 * 60)
