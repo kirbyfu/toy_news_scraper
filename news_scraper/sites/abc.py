@@ -20,6 +20,7 @@ def get_articles(date_scraped):
             'date_first_published': article.get('data-first-published'),
             'date_last_published': article.get('data-last-published'),
             'summary': article.find('p').text,
+            'url': f"https://www.abc.net.au{article.find('a').get('href')}",
             'type': 'main',
             'date_scraped': date_scraped
         } for article in articles
@@ -35,10 +36,11 @@ def get_last_date_scraped(db):
 def insert_article(db, article):
     """Inserts a new article into the database"""
     db.execute("""
-        INSERT INTO abc_article (headline, summary, date_first_published, date_last_published, type, date_scraped)
-        VALUES (%(headline)s, %(summary)s, %(date_first_published)s, %(date_last_published)s, %(type)s, %(date_scraped)s)""",
+        INSERT INTO abc_article (headline, summary, date_first_published, date_last_published, url, type, date_scraped)
+        VALUES (%(headline)s, %(summary)s, %(date_first_published)s, %(date_last_published)s, %(url)s, %(type)s, %(date_scraped)s)""",
     article)
     print(f"[+] [{article['date_last_published']}] {article['headline']}")
+    print(article['url'])
 
 
 def update_article(db, article_id, article):
@@ -49,6 +51,7 @@ def update_article(db, article_id, article):
         SET
             summary = %(summary)s,
             date_last_published =%(date_last_published)s,
+            url = %(url)s,
             date_scraped = %(date_scraped)s
         WHERE
             id = %(article_id)s
@@ -57,6 +60,7 @@ def update_article(db, article_id, article):
         **article,
     })
     print(f"[^] [{article['date_last_published']}] {article['headline']}")
+    print(article['url'])
 
 
 def update_article_scrape_date(db, article_id, date_scraped):

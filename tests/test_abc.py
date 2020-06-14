@@ -39,7 +39,7 @@ def test_get_articles(mock_requests):
                                     data-last-published="2020-06-13T09:15+1000"
                                 >
                                     <h3>
-                                        <a href="">Headline 1</a>
+                                        <a href="/news/2020-06-13/headline-1">Headline 1</a>
                                     </h3>
                                     <p>Summary 1</p>
                                 </li>
@@ -52,7 +52,7 @@ def test_get_articles(mock_requests):
                                     data-last-published="2020-06-13T08:28+1000"
                                 >
                                     <h3>
-                                        <a href="">Headline 2</a>
+                                        <a href="/news/2020-06-13/headline-2">Headline 2</a>
                                     </h3>
                                     <p>Summary 2</p>
                                 </li>
@@ -74,6 +74,7 @@ def test_get_articles(mock_requests):
             'date_first_published': '2020-06-13T08:25+1000',
             'date_last_published': '2020-06-13T09:15+1000',
             'summary': 'Summary 1',
+            'url': 'https://www.abc.net.au/news/2020-06-13/headline-1',
             'type': 'main',
             'date_scraped': date_scraped
         },
@@ -82,6 +83,7 @@ def test_get_articles(mock_requests):
             'date_first_published': '2020-06-13T05:10+1000',
             'date_last_published': '2020-06-13T08:28+1000',
             'summary': 'Summary 2',
+            'url': 'https://www.abc.net.au/news/2020-06-13/headline-2',
             'type': 'main',
             'date_scraped': date_scraped
         },
