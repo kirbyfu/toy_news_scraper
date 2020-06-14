@@ -7,6 +7,7 @@ import requests
 
 
 def get_articles(date_scraped):
+    """Returns a list of articles scraped from ABC"""
     res = requests.get('https://www.abc.net.au/news/')
     if res.status_code != 200:
         raise Exception(f'Invalid status code: {res.status_code}')
@@ -26,11 +27,13 @@ def get_articles(date_scraped):
 
 
 def get_last_date_scraped(db):
+    """Returns the last datetime string a scrape was performed"""
     result = db.query('SELECT date_scraped FROM abc_article ORDER BY date_scraped DESC LIMIT 1')
     return None if len(result) == 0 else result[0][0].isoformat()
 
 
 def insert_article(db, article):
+    """Inserts a new article into the database"""
     db.execute("""
         INSERT INTO abc_article (headline, summary, date_first_published, date_last_published, type, date_scraped)
         VALUES (%(headline)s, %(summary)s, %(date_first_published)s, %(date_last_published)s, %(type)s, %(date_scraped)s)""",
@@ -39,11 +42,11 @@ def insert_article(db, article):
 
 
 def update_article(db, article_id, article):
+    """Updates an existing article which has a different date_last_publish from the previous scrape"""
     db.execute("""
         UPDATE
             abc_article
         SET
-            headline = %(headline)s,
             summary = %(summary)s,
             date_last_published =%(date_last_published)s,
             date_scraped = %(date_scraped)s
@@ -57,6 +60,7 @@ def update_article(db, article_id, article):
 
 
 def update_article_scrape_date(db, article_id, date_scraped):
+    """Updates an existing article which didn't change from the previous scrape by marking it as part of the current scrape"""
     db.execute("""
         UPDATE
             abc_article
@@ -71,6 +75,7 @@ def update_article_scrape_date(db, article_id, date_scraped):
 
 
 def find_prev_article(db, article, date_scraped):
+    """Check if an article with the same headline and date_first_published exists and return its id and date_last_published"""
     result = db.query("""
         SELECT
             id,
@@ -80,19 +85,18 @@ def find_prev_article(db, article, date_scraped):
         WHERE
             headline = %(headline)s
             AND date_first_published = %(date_first_published)s
-            AND summary = %(summary)s
         LIMIT 1
     """,
     {
         'headline': article['headline'],
         'date_first_published': article['date_first_published'],
-        'summary': article['summary'],
         'date_scraped': date_scraped,
     })
     return {'id': result[0][0], 'date_last_published': result[0][1]} if len(result) else None
 
 
 def start_scrape(db):
+    """Perform a scrape of ABC and log any changes since the last scrape"""
     date_scraped = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
     articles = get_articles(date_scraped)
     last_date_scraped = get_last_date_scraped(db)
