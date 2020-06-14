@@ -6,9 +6,10 @@ import psycopg2
 import requests
 
 
-def get_articles():
-    date_scraped = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+def get_articles(date_scraped):
     res = requests.get('https://www.abc.net.au/news/')
+    if res.status_code != 200:
+        raise Exception(f'Invalid status code: {res.status_code}')
     soup = BeautifulSoup(res.text, 'html.parser')
     module_body = soup.find(class_='section module-body')
     articles = module_body.find_all('li')
@@ -92,7 +93,8 @@ def find_prev_article(db, article, date_scraped):
 
 
 def start_scrape(db):
-    articles = get_articles()
+    date_scraped = datetime.utcnow().replace(tzinfo=timezone.utc).isoformat()
+    articles = get_articles(date_scraped)
     last_date_scraped = get_last_date_scraped(db)
 
     # If there was no previous scrape, insert every article
@@ -109,7 +111,3 @@ def start_scrape(db):
             update_article(db, prev_article['id'], article)
         else:
             update_article_scrape_date(db, prev_article['id'], article['date_scraped'])
-
-
-# with open('news.html', encoding='utf-8') as f:
-#     html = f.read()
