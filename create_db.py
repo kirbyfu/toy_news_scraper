@@ -3,7 +3,7 @@ import os
 from news_scraper.db import Database
 
 db = Database(
-    user='postgres',
+    user=os.environ['POSTGRES_USER'],
     password=os.environ['POSTGRES_PASSWORD'],
     port=os.environ['POSTGRES_PORT'],
     database=os.environ['POSTGRES_DATABASE'],

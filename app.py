@@ -14,4 +14,4 @@ db = Database(
 
 while True:
     abc.start_scrape(db)
-    time.sleep(1 * 60)
+    time.sleep(int(os.environ['SCRAPE_INTERVAL']))
