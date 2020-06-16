@@ -13,8 +13,8 @@ def get_articles(date_scraped):
     if res.status_code != 200:
         raise Exception(f'Invalid status code: {res.status_code}')
     soup = BeautifulSoup(res.text, 'html.parser')
-    module_body = soup.find(class_='section module-body')
-    articles = module_body.find_all('li')
+    module_body_list = soup.find(class_='section module-body').find('ol')
+    articles = module_body_list.find_all('li', recursive=False)
     return [
         {
             'headline': article.find('a').text,
